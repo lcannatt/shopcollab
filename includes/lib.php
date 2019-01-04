@@ -212,7 +212,8 @@ function process_vote_changes(){
 function new_item(){
 	require_once './includes/auth.php';
 	global $db;
-	if(preg_match('/[;\'"^£$%&*()}{@#~?><>,|=_+¬\-]/', $_POST['itemInput'])){
+	//say no to XSS and also
+	if(!preg_match('/[a-z0-9.]/', $_POST['itemInput'])||!preg_match('/[a-z0-9.]/', $_POST['category'])){
 		return false;
 	}
 	$itemName=strtoupper($_POST['itemInput']);
