@@ -1,6 +1,6 @@
 # shopcollab
 
-A simple collaborative shopping list tool, to allow multiple users to vote and add items to a shopping list for your office.
+A simple collaborative shopping list web tool, to allow multiple users to vote and add items to a shopping list for your office.
 Site visitors can vote for items they would like, undo their own votes, and add items both new and old to the list, arranged by categories of your choosing.
 The list owner can use the Admin Tools to mark the shopping as done, undo the last shopping trip, manage the historical item master list, and add historical items in bulk to the shopping list.
 
