@@ -1,0 +1,34 @@
+CREATE DATABASE `shopping_list` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
+USE `shopping_list`;
+
+CREATE TABLE `item_master` (
+  `ITEM_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(255) NOT NULL,
+  `CATEGORY` varchar(255) NOT NULL,
+  PRIMARY KEY (`ITEM_ID`),
+  UNIQUE KEY `NAME_UNIQUE` (`NAME`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `votes_active` (
+  `ITEM_ID` int(11) NOT NULL,
+  `SESSID` varchar(255) NOT NULL,
+  `VOTE_DATE` datetime NOT NULL,
+  PRIMARY KEY (`ITEM_ID`,`SESSID`),
+  CONSTRAINT `drinks_a` FOREIGN KEY (`ITEM_ID`) REFERENCES `item_master` (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `votes_inactive` (
+  `VOTE_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ITEM_ID` int(11) NOT NULL,
+  `SESSID` varchar(255) NOT NULL,
+  `VOTE_DATE` datetime NOT NULL,
+  `PURCHASE_DATE` datetime NOT NULL,
+  PRIMARY KEY (`VOTE_ID`),
+  KEY `votes_i_idx` (`ITEM_ID`),
+  CONSTRAINT `votes_i` FOREIGN KEY (`ITEM_ID`) REFERENCES `item_master` (`item_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `shopping_list`.`devices` (
+  `SESS_ID` VARCHAR(45) NOT NULL,
+  `LAST_ACTIVE` DATETIME NOT NULL,
+  PRIMARY KEY (`SESS_ID`));

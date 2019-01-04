@@ -1,0 +1,3 @@
+INSERT INTO votes_active (ITEM_ID,SESSID,VOTE_DATE)
+SELECT ITEM_ID,SESSID,VOTE_DATE FROM votes_inactive WHERE PURCHASE_DATE = (SELECT MAX(PURCHASE_DATE) FROM votes_inactive);
+DELETE FROM votes_inactive where ITEM_ID is not null;
