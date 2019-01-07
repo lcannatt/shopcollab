@@ -33,7 +33,7 @@ if(is_post_request()){
 	else if(isset($_POST['undo'])){
 		set_undo_shopping();
 	}
-	else if(isset($_POST['todelete'])){
+	else if(isset($_POST['delete'])){
 		foreach($_POST['todelete'] as $itemID){
 			set_delete_item($itemID);
 		}

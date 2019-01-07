@@ -23,20 +23,21 @@ function close_db($connection){
 # DATA RETRIEVAL
 
 function get_user_votes($db,$tableName){
-	#Returns mysqli object containing all the items the current user has voted for
-	#Helper function
+	#Returns mysqli stmt object containing all the items the current user has voted for
+	#Helper function : Output in form ID, SESSID, item name
 	$user_query = $db->prepare("SELECT item_master.ITEM_ID,SESSID,NAME FROM $tableName LEFT JOIN item_master ON $tableName.ITEM_ID = item_master.ITEM_ID WHERE SESSID=?");
 	$user_query->bind_param('s',$_COOKIE['PHPSESSID']);
 	$user_query->execute();
-	$user_set = $user_query->get_result();
-	return $user_set;
+	$user_query->store_result();
+	return $user_query;
 }
 function get_table_totals($db,$tableName){
-	#Returns mysqli object containing all items on shopping list with associated metadata
-	#Helper function
-	$vote_query="SELECT item_master.NAME,Count(VOTE_DATE),MIN(VOTE_DATE),MAX(DATEDIFF(NOW(),VOTE_DATE)),$tableName.ITEM_ID,CATEGORY FROM $tableName LEFT JOIN item_master ON $tableName.ITEM_ID = item_master.ITEM_ID GROUP BY item_master.NAME;";
-	$vote_set = mysqli_query($db,$vote_query);
-	return $vote_set;
+	#Returns mysqli stmt object containing all items on shopping list with associated metadata
+	#Helper function : Output is Name,count,earliest Vote date, largest age of vote, id, and category
+	$vote_stmt=$db->prepare("SELECT item_master.NAME,Count(VOTE_DATE),MIN(VOTE_DATE),MAX(DATEDIFF(NOW(),VOTE_DATE)),$tableName.ITEM_ID,CATEGORY FROM $tableName LEFT JOIN item_master ON $tableName.ITEM_ID = item_master.ITEM_ID GROUP BY item_master.NAME;");
+	$vote_stmt->execute();
+	$vote_stmt->store_result();
+	return $vote_stmt;
 }
 function get_vote_info(){
 	#wrapper function for vote box retrieval and formatting
@@ -46,8 +47,6 @@ function get_vote_info(){
 	$vote_set = get_table_totals($db,$tableName);
 	$user_set = get_user_votes($db,$tableName);
 	$voteList = format_votes($vote_set,$user_set);
-	mysqli_free_result($vote_set);
-	mysqli_free_result($user_set);
 	return $voteList;
 }
 function get_previously_requested_items(){
@@ -195,18 +194,19 @@ function set_undo_shopping(){
 function process_vote_changes(){
 	global $db;
 	$sqlUserVotes=get_user_votes($db,'votes_active');
+	# user set Output in form ID, SESSID, item name
 	$postedVals=[];
 	$dbVals=[];
 	if(isset($_POST['VOTE'])){
 		$postedVals=$_POST['VOTE'];
 	}
-	while($voteRow=mysqli_fetch_assoc($sqlUserVotes)){
-		$dbVals[]=$voteRow['ITEM_ID'];
+	$sqlUserVotes->bind_result($id,$sessid,$name);
+	while($sqlUserVotes->fetch()){
+		$dbVals[]=$id;
 	}
 	#Only delete by inference if this was a sync call, not an add.
-	if (!isset($_POST['itemInput']))set_delete_votes(array_diff($dbVals,$postedVals));
+	if (!(isset($_POST['itemInput'])||isset($_POST['add'])))set_delete_votes(array_diff($dbVals,$postedVals));
 	set_insert_votes(array_diff($postedVals,$dbVals));
-	mysqli_free_result($sqlUserVotes);
 }
 #handles user facing item addition
 function new_item(){
@@ -224,12 +224,12 @@ function new_item(){
 	$check=$db->prepare("SELECT ITEM_ID FROM item_master WHERE NAME=?;");
 	$check->bind_param('s',$itemName);
 	$check->execute();
-	$checkSet=$check->get_result();
+	$check->store_result();
 	#If we got results, just set a vote for it and the vote processor will handle it
-	if($checkSet->num_rows>0){
-		$id=$checkSet->fetch_row()[0];
+	if($check->num_rows>0){
+		$check->bind_result($id);
+		$check->fetch();
 		$_POST["VOTE"][]=$id;
-		mysqli_free_result($checkSet);
 		return true;
 	}#otherwise, first create an entry for it in the item table, then let the vote processor vote for it.
 	else{
@@ -260,22 +260,19 @@ function new_item(){
 # DATA STRUCTURE TRANSFORM HELPER
 
 function format_votes(&$vote_set,&$user_set){
+
+	# user set Output in form ID, SESSID, item name
+	# vote set Output is Name,count,earliest Vote date, largest age of vote, id, and category
 	$temp_user_set=[];
 	$result=[];
 	if (!is_null($user_set)){
-		while($itemRow=mysqli_fetch_row($user_set)){
-		$temp_user_set[$itemRow[0]]=$itemRow[1];
+		$user_set->bind_result($id,$sessid,$name);
+		while($user_set->fetch()){
+		$temp_user_set[$id]=$sessid;
 		}
 	}
-	
-	while($row=mysqli_fetch_row($vote_set)){
-		#Initialize Vars
-		$item=$row[0];
-		$voteCount=$row[1];
-		$date=$row[2];
-		$datediff=$row[3];
-		$itemID=$row[4];
-		$category=$row[5];
+	$vote_set->bind_result($item,$voteCount,$date,$datediff,$itemID,$category);
+	while($vote_set->fetch()){
 		$prio=0;
 		$voted=0;
 		#Calculate priority
