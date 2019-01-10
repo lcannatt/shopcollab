@@ -15,7 +15,7 @@ $db=open_db();
 	</head>
 	<body>
 		<?php require './includes/nav.php'?>
-		<div class="preview disabled">
+		<div class="preview">
 			<h2>News Update</h2>
 			<div style="margin:0em 2em;">
 				<p><b>Some subtitle type stuff goes here</b></p>

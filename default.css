@@ -96,6 +96,10 @@ li a:hover{
     position:static;
     display: inline-block;
 }
+.justified{
+    text-align: justify;
+    padding:0em 2em;
+}
 
 /* FrontPage Item Blocks */
 
@@ -125,8 +129,9 @@ li a:hover{
     margin: .25em 0;
     display:inline-block;
     color:black;
+    cursor:pointer;
 }
-.voteBox:hover{
+.voteBox:active{
     background: #3D71AA;
 }
 .columns input[type=checkbox]{
@@ -138,15 +143,11 @@ li a:hover{
 .midPrio {
     background: #8AAFD9;
 }
-.midPrio:hover {
-    background: #3D71AA;
-}
+
 .highPrio{
     background: #6C98CA;
 }
-.highPrio:hover {
-    background: #3D71AA;
-}
+
 
 .leftSpan{
     float:left;
@@ -157,7 +158,10 @@ li a:hover{
     float:right;
 }
 input[type=checkbox]:checked + label{
-    background-color: #3D71AA;
+    box-shadow: inset 1px 1px 2px;
+}
+input[type=checkbox]:not(:checked) + label{
+    box-shadow:1px 1px 2px; 
 }
 
 

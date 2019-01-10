@@ -41,7 +41,7 @@ function voteBoxes(&$boxes,$title=Null){
 		$meta = preg_split('/\|/', $parse);
 		$item = ucfirst(strtolower(htmlspecialchars($meta[2])));
 		$id=$meta[5];
-		switch($meta[0]){
+		switch($meta[1]){
 			case 0:$class="";
 				break;
 			case 1:$class=" midPrio";
@@ -61,10 +61,10 @@ function voteBoxes(&$boxes,$title=Null){
 				break;
 		}
 		// echo "<label for=\"$item\">";
-		echo "<input type=\"checkbox\" name =\"VOTE[]\" value=\"$id\" id=\"$item\"$checked>";
-			echo "<label for=\"$item\" class=\"voteBox$class$voted\" title=\"Requested {$meta[3]}\">";
+		echo "<input type=\"checkbox\" name =\"VOTE[]\" value=\"$id\" id=\"$id\"$checked >";
+			echo "<label for=\"$id\" class=\"voteBox$voted\" title=\"Requested {$meta[3]}\" prio=\"{$meta[1]}\">";
 			echo "<span class=\"leftSpan\">$item</span>"; //Name of Item
-			echo "<span class=\"rightSpan\">{$meta[1]}</span>"; //Vote Count of Item
+			echo "<span class=\"rightSpan\">{$meta[0]}</span>"; //Vote Count of Item
 		echo "</label>";
 	}
 	echo "</div>";

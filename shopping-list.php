@@ -1,27 +1,9 @@
 <?php
 require_once './includes/boxGen.php';
 require_once './includes/lib.php';
+require_once './vote.php';
 
 
-
-// Open DB connection
-$db = open_db();
-
-if(is_post_request()){
-
-	//check if we've arrived thanks to an add item request
-	if(isset($_POST['itemInput'])&&isset($_POST['category'])){
-		$success=new_item();
-
-	}
-	//Process any votes before taking updates;
-	process_vote_changes();
-
-}
-
-// Query DB for existing shopping list
-$votes=get_vote_info();
-close_db($db);
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -32,8 +14,7 @@ close_db($db);
 	<script type="text/javascript" src="./scripts/masonry.js"></script>
 </head>
 <body onresize="evalCols()" onload="initCols()">
-	<?php require './includes/nav.php';	?>
-	<?php
+	<?php require './includes/nav.php';	
 	if(isset($success)&&!$success){
 		echo "<div class=\"error\"><p>Bad input. No Soup for you.</p></div>";
 	}
@@ -45,7 +26,7 @@ close_db($db);
 	</div>
 	<div class="preview">
 
-		<form action="./shopping-list.php" method="post">
+		<form id="voteList" action="./shopping-list.php" method="post">
 			<!-- <span class="buttonLink">Hide My Votes</span> -->
 		<div class="floater">
 			<div class="columns">
@@ -61,8 +42,20 @@ close_db($db);
 			</div>
 		</div>
 			<a class="buttonLink" href="./new-item.php">Add Item</a>
-			<input class= "buttonLink" type="submit" value="Submit"> 
+			<input class= "buttonLink" type="submit" value="Submit+Update"> 
 		</form>
+	</div>
+	<div class="preview">
+		<h4>
+			How This Works:
+		</h4>
+		<div class="justified">
+		<p>The list above is how we decide what gets bought for the office.</p>
+		<p>If you see something that you want already on the list, vote for it by clicking on it.</p>
+		<p>If you want something and it isn't on the list, click <b>Add Item</b>, and add it to the appropriate category.</p>
+		<br>
+		<p>You get a maximum of one vote per item. Items with more votes are more likely to be bought.</p>
+		</div>
 	</div>
 	<script type="text/javascript" src="./scripts/voteHandler.js"></script>
 </body>

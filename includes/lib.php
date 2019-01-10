@@ -26,7 +26,7 @@ function get_user_votes($db,$tableName){
 	#Returns mysqli stmt object containing all the items the current user has voted for
 	#Helper function : Output in form ID, SESSID, item name
 	$user_query = $db->prepare("SELECT item_master.ITEM_ID,SESSID,NAME FROM $tableName LEFT JOIN item_master ON $tableName.ITEM_ID = item_master.ITEM_ID WHERE SESSID=?");
-	$user_query->bind_param('s',$_COOKIE['PHPSESSID']);
+	$user_query->bind_param('s',$_SERVER['REMOTE_ADDR']);
 	$user_query->execute();
 	$user_query->store_result();
 	return $user_query;
@@ -120,7 +120,7 @@ function set_delete_votes($voteList){
 	global $db;
 	foreach($voteList as $item){
 		$deleteQuery=$db->prepare("DELETE FROM votes_active WHERE (ITEM_ID=? AND SESSID=?);");
-		$deleteQuery->bind_param('is',$item,$_COOKIE['PHPSESSID']);
+		$deleteQuery->bind_param('is',$item,$_SERVER['REMOTE_ADDR']);
 		$deleteQuery->execute();
 	}
 }
@@ -128,7 +128,7 @@ function set_insert_votes($voteList){
 	global $db;
 	foreach($voteList as $item){
 		$insertQuery=$db->prepare("INSERT INTO votes_active (ITEM_ID,SESSID,VOTE_DATE) VALUES (?,?,NOW());");
-		$insertQuery->bind_param('is',$item,$_COOKIE['PHPSESSID']);
+		$insertQuery->bind_param('is',$item,$_SERVER['REMOTE_ADDR']);
 		$insertQuery->execute();
 	}
 }
@@ -261,8 +261,7 @@ function new_item(){
 
 function format_votes(&$vote_set,&$user_set){
 
-	# user set Output in form ID, SESSID, item name
-	# vote set Output is Name,count,earliest Vote date, largest age of vote, id, and category
+	# Formats output vote to format $voteCount|$prio(is this old)|$item|$date|$voted|$itemID
 	$temp_user_set=[];
 	$result=[];
 	if (!is_null($user_set)){
@@ -279,20 +278,14 @@ function format_votes(&$vote_set,&$user_set){
 		if($datediff>DATE_CUTOFF){
 			$prio+=1;
 		}
-		if($voteCount>=MID_VOTE_CUTOFF){
-			$prio+=1;
-		}
-		if($voteCount>=HIGH_VOTE_CUTOFF){
-			$prio=2;
-		}
 		if(isset($temp_user_set[$itemID])){
 			$voted=1;
 		}
-		$pieces="$prio|$voteCount|$item|$date|$voted|$itemID";
+		$pieces="$voteCount|$prio|$item|$date|$voted|$itemID";
 		#Sort formatted string into categories
 		$result[$category][]=$pieces;
 	}
-	# order by priority
+	# order by vote count
 	foreach($result as $cat => $infos){
 		sort($infos);
 		$result[$cat]=array_reverse($infos);
