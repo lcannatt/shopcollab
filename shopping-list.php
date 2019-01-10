@@ -3,7 +3,8 @@ require_once './includes/boxGen.php';
 require_once './includes/lib.php';
 require_once './vote.php';
 
-
+// Query DB for existing shopping list
+$votes=get_vote_info();
 ?>
 <!DOCTYPE html>
 <html lang='en'>

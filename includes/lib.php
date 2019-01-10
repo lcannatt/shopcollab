@@ -293,3 +293,4 @@ function format_votes(&$vote_set,&$user_set){
 
 	return $result;
 }
+$db = open_db();

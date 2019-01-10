@@ -3,8 +3,6 @@
 require_once './includes/lib.php';
 require './includes/boxGen.php';
 
-$db=open_db();
-
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -35,5 +33,4 @@ $db=open_db();
 			<p><a href="shopping-list.php">Link to shopping list</a></p>
 		</div>
 	</body>
-	<?php close_db($db);?>
 </html>

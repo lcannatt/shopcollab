@@ -10,7 +10,6 @@
 <?php 
 require './includes/nav.php';	
 require_once './includes/lib.php';
-$db=open_db();
 require_once './includes/auth.php';
 if(!$authStatus){
 	echo '<div class="preview">
@@ -42,6 +41,7 @@ if(is_post_request()){
 		process_vote_changes();
 	}
 }
+
 $items=get_item_master_list();
 
 if(!get_shopping_list_empty()){
@@ -51,7 +51,6 @@ if(!get_shopping_list_empty()){
 	$disableUndo='';
 	$disableShop=" disabled";
 }
-close_db($db);
 ?>
 
 	<div class="preview">

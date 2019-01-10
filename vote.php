@@ -1,7 +1,7 @@
 <?php // Open DB connection
 require_once './includes/lib.php';
 
-$db = open_db();
+
 
 if(is_post_request()){
 
@@ -15,6 +15,3 @@ if(is_post_request()){
 
 }
 
-// Query DB for existing shopping list
-$votes=get_vote_info();
-close_db($db);
