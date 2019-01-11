@@ -15,8 +15,10 @@ function get_item_data($id){
     $query= $db->prepare("SELECT NAME, CATEGORY FROM item_master WHERE ITEM_ID=?");
     $query->bind_param("i",$id);
     $query->execute();
-    $query=$query->get_result();
-    $row=$query->fetch_row();
+    $query->store_result();
+    $query->bind_result($name,$cat);
+    $query->fetch();
+    $row=Array($name,$cat);
     return $row;
 }
 ?>
