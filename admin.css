@@ -1,0 +1,23 @@
+
+input[type=checkbox]:checked + label{
+    background-color:rgb(125, 224, 125);
+}
+input[type=checkbox]:not(:checked) + label{
+    background-color:rgb(255, 108, 108); 
+}
+
+
+/*#########################*/
+/*###### PrintBoxes #######*/
+/*#########################*/
+
+.printBox {
+    transition:background .2s;
+    border-radius: .5em;
+    padding: .5em 1em; 
+    width: 15em;
+    margin: .25em 0;
+    display:inline-block;
+    color:black;
+    cursor:pointer;
+}

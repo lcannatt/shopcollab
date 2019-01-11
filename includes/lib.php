@@ -145,7 +145,7 @@ function set_insert_item($db,$itemName,$category){
 function set_delete_item($itemID){
 	#remove an item and all votes past and present for it from the db.
 	global $db;
-	if(is_null($itemID)){
+	if(is_null($itemID)||!preg_match('/^\d+$/',$itemID)){
 		return false;
 	}
 	$query="DELETE FROM votes_active WHERE (ITEM_ID =$itemID);";

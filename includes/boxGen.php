@@ -69,3 +69,25 @@ function voteBoxes(&$boxes,$title=Null){
 	}
 	echo "</div>";
 }
+
+//Create prioritized boxes using pipe delimited metadata
+//Array is ordered and follows this pattern: "{Priority}|{Vote Count}|{Item Name}|{Request Date}|{Voted on prior}|{item id}"]
+function printBoxes(&$boxes,$title=Null){
+	echo "<div class=\"listContainer\">";
+	if(is_null($title)){
+		$title="Category";
+	}
+	echo "<h4>$title</h4>";
+	foreach($boxes as $parse){
+		$meta = preg_split('/\|/', $parse);
+		$item = ucfirst(strtolower(htmlspecialchars($meta[2])));
+		$id=$meta[5];
+		// echo "<label for=\"$item\">";
+		echo "<input type=\"checkbox\" name =\"VOTE[]\" value=\"$id\" id=\"$id\">";
+			echo "<label for=\"$id\" class=\"printBox\">";
+			echo "<span class=\"leftSpan\">$item</span>"; //Name of Item
+			echo "<span class=\"rightSpan\">{$meta[0]}</span>"; //Vote Count of Item
+		echo "</label>";
+	}
+	echo "</div>";
+}

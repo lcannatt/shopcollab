@@ -187,19 +187,3 @@ input[type=checkbox]:not(:checked) + label{
 .disabled {
     cursor: not-allowed;
 }
-
-/*#########################*/
-/*####### PartyHats #######*/
-/*#########################*/
-
-.xmashatleft {
-    position:absolute;
-    margin: -25px 0 0 -35px;
-    z-index:9999;
- }
-
-.xmashatright {
-    position:absolute;
-    margin: -5px 0 0 -240px;
-    z-index:9999;
- }
