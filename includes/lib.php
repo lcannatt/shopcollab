@@ -213,7 +213,7 @@ function new_item(){
 	require_once './includes/auth.php';
 	global $db;
 	//say no to XSS and also
-	if(!preg_match('/[a-z0-9.]/', $_POST['itemInput'])||!preg_match('/[a-z0-9.]/', $_POST['category'])){
+	if(!preg_match('/[A-Z a-z0-9.]/', $_POST['itemInput'])||!preg_match('/[A-Z a-z0-9.]/', $_POST['category'])){
 		return false;
 	}
 	$itemName=strtoupper($_POST['itemInput']);
