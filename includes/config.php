@@ -1,10 +1,8 @@
 <?php
 # CONFIG
-# Age in days of an item request at which it gets a priority bump:
-define("DATE_CUTOFF",7);
-# Number of votes required for first priority bump:
+# Number of votes required for medium visual priority:
 define("MID_VOTE_CUTOFF",2);
-# Number of votes required for highest priority:
+# Number of votes required for high visual priority:
 define("HIGH_VOTE_CUTOFF",5);
 # Password Hash for Admin Authentication:
 define('PASS_HASH','$2y$12$HB9WAkFvhdk6Qcph1KG1oOnaDv3FFh7Fw.UKsV5sDKpXF5Ps6tzka');

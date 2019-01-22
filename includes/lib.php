@@ -33,8 +33,8 @@ function get_user_votes($db,$tableName){
 }
 function get_table_totals($db,$tableName){
 	#Returns mysqli stmt object containing all items on shopping list with associated metadata
-	#Helper function : Output is Name,count,earliest Vote date, largest age of vote, id, and category
-	$vote_stmt=$db->prepare("SELECT item_master.NAME,Count(VOTE_DATE),MIN(VOTE_DATE),MAX(DATEDIFF(NOW(),VOTE_DATE)),$tableName.ITEM_ID,CATEGORY FROM $tableName LEFT JOIN item_master ON $tableName.ITEM_ID = item_master.ITEM_ID GROUP BY item_master.NAME;");
+	#Helper function : Output is Category,count,Name,earliest Vote date, id
+	$vote_stmt=$db->prepare("SELECT MAX(CATEGORY) as CATEGORY, Count(votes_active.ITEM_ID) as VOTES, MAX(NAME) as NAME, Min(VOTE_DATE)as VOTE_DATE, MAX(votes_active.ITEM_ID) as ITEM_ID FROM votes_active left outer join item_master on votes_active.ITEM_ID=item_master.ITEM_ID GROUP BY votes_active.ITEM_ID ORDER BY CATEGORY ASC, VOTES DESC, NAME ASC; ");
 	$vote_stmt->execute();
 	$vote_stmt->store_result();
 	return $vote_stmt;
@@ -71,15 +71,7 @@ function preview_shopping_list(){
 	$listSet=mysqli_query($db,$sqlCommand);
 	$final=[];
 	while($row=mysqli_fetch_row($listSet)){
-		$voteCount=$row[1];
-		$prio=0;
-		if($voteCount>=3){
-			$prio=1;
-		}
-		if($voteCount>=6){
-			$prio=2;
-		}
-		$final[ucfirst(strtolower($row[0]))]=$prio;
+		$final[ucfirst(strtolower($row[0]))]=$row[1];
 	}
 	return $final;
 }
@@ -270,14 +262,11 @@ function format_votes(&$vote_set,&$user_set){
 		$temp_user_set[$id]=$sessid;
 		}
 	}
-	$vote_set->bind_result($item,$voteCount,$date,$datediff,$itemID,$category);
+	# votes order is Category,count,Name,earliest Vote date, id
+	$vote_set->bind_result($category,$voteCount,$item,$date,$itemID);
 	while($vote_set->fetch()){
 		$prio=0;
 		$voted=0;
-		#Calculate priority
-		if($datediff>DATE_CUTOFF){
-			$prio+=1;
-		}
 		if(isset($temp_user_set[$itemID])){
 			$voted=1;
 		}
@@ -286,10 +275,10 @@ function format_votes(&$vote_set,&$user_set){
 		$result[$category][]=$pieces;
 	}
 	# order by vote count
-	foreach($result as $cat => $infos){
-		sort($infos);
-		$result[$cat]=array_reverse($infos);
-	}
+	// foreach($result as $cat => $infos){
+	// 	sort($infos);
+	// 	$result[$cat]=array_reverse($infos);
+	// }
 
 	return $result;
 }

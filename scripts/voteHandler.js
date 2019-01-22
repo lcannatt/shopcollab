@@ -13,10 +13,10 @@ function toggleVote(){
 	}
 	//change the class
 	this.classList.toggle("selected");
-	if(votes>4){
+	if(votes>5){
 		this.classList.remove("midPrio");
 		this.classList.add("highPrio")
-	}else if(votes>2||this.getAttribute("prio")>0){
+	}else if(votes>2){
 		this.classList.remove("highPrio");
 		this.classList.add("midPrio");
 	}else{
@@ -37,9 +37,9 @@ for(var i=0;i<items.length;i++){
 		voteArray[items[i].getAttribute("for")]=false;
 	}
 	items[i].addEventListener("click",toggleVote);
-	if(items[i].children[1].innerHTML>4){
+	if(items[i].children[1].innerHTML>5){
 		items[i].classList.toggle("highprio");
-	}else if(items[i].children[1].innerHTML>2||items[i].getAttribute("prio")!=0){
+	}else if(items[i].children[1].innerHTML>2){
 		items[i].classList.toggle("midPrio");
 	}
 }
