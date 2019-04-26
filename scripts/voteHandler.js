@@ -38,7 +38,7 @@ for(var i=0;i<items.length;i++){
 	}
 	items[i].addEventListener("click",toggleVote);
 	if(items[i].children[1].innerHTML>5){
-		items[i].classList.toggle("highprio");
+		items[i].classList.toggle("highPrio");
 	}else if(items[i].children[1].innerHTML>2){
 		items[i].classList.toggle("midPrio");
 	}
