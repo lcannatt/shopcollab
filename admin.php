@@ -127,4 +127,7 @@ if(!get_shopping_list_empty()){
 			</form>
 		</div>
 </body>
+<script>
+	document.querySelectorAll('input[type="checkbox"]').forEach(function f(e){e.checked=true;});
+</script>
 </html>
