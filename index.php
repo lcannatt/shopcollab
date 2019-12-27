@@ -1,7 +1,8 @@
 <?php
 
 require_once './includes/lib.php';
-require './includes/boxGen.php';
+require_once './includes/pc_general.php';
+require_once './includes/database.php';
 
 ?>
 <!DOCTYPE html>
@@ -12,7 +13,7 @@ require './includes/boxGen.php';
 		<link rel="stylesheet" type="text/css" href="default.css">
 	</head>
 	<body>
-		<?php require './includes/nav.php'?>
+		<?php pc_navBar();?>
 		<div class="preview">
 			<h2>News Update</h2>
 			<div style="margin:0em 2em;">
@@ -26,7 +27,8 @@ require './includes/boxGen.php';
 			<h2>Shopping List</h2>
 			<p>Top 6 Most Requested Items</p>
 			<?php
-			$shoppingList=preview_shopping_list();
+			$db=Database::getDB();
+			$shoppingList=$db->getShoppingPreview();
 			if(count($shoppingList)==0){echo "<p>Whoops! Nothing to see here.. Maybe the shopping got done.</p>";}
 			else{prioBoxes($shoppingList);}
 			?>

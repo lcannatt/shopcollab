@@ -1,7 +1,7 @@
 <?php
 $siteroot='';
-?>
-<div class="TOC">
+function pc_navBar(){
+	echo '<div class="TOC">
 	<h1>Utilities</h1>
 	<div class="NavBar">
 	<ul>
@@ -10,4 +10,6 @@ $siteroot='';
 		--><li><a href="<?=$siteroot?>/admin.php">Admin Tools</a></li>
 	</ul>
 	</div>
-</div>
+</div>';
+}
+

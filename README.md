@@ -27,5 +27,4 @@ The defaults were intended for an office of about 15 people with shopping runs o
 # Notes:
 
 Admin authentications are session specific and expire after one day of inactivity.
-Since this is not currently built for user specificity, the system is vulnerable to vote inflation by someone who knows how to change their cookies.
-Sessions live for a year, but if a user closes their browser they will not be able to unvote for their old items.
+Since this is not currently built for user specificity, the system is vulnerable to vote inflation by someone who knows how to change their ip address.

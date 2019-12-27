@@ -1,3 +1,10 @@
+<?php ;	
+require_once './includes/lib.php';
+require_once './includes/auth.php';
+require_once './includes/pc_general.php';
+require_once './includes/database.php';
+$db=Database::getDB();
+?>
 <!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -8,11 +15,8 @@
 	<script type="text/javascript" src="./scripts/masonry.js"></script>
 </head>
 <body onresize="evalCols()" onload="initCols()">
-<?php 
-require './includes/nav.php';	
-require_once './includes/lib.php';
-require_once './includes/auth.php';
-require_once './includes/boxGen.php';
+<?php
+pc_navBar();
 if(!$authStatus){
 	echo '<div class="preview">
 		<h2>
@@ -26,27 +30,26 @@ if(!$authStatus){
 	</div></body></html>';
 	die;
 }
+//THIS CODE SHOULD NOT EXECUTE IF NOT AUTHORIZED
 if(is_post_request()){
 	//only do one please
 	if(isset($_POST['shopped'])){
-		set_go_shopping();
+		$db->setGoShopping();
 	}
 	else if(isset($_POST['undo'])){
-		set_undo_shopping();
+		$db->setUndoShopping();
 	}
 	else if(isset($_POST['delete'])){
-		foreach($_POST['todelete'] as $itemID){
-			set_delete_item($itemID);
-		}
+		$db->delItemDefinitions($_POST['todelete']);
 	}
 	else if(isset($_POST['VOTE'])){
 		process_vote_changes();
 	}
 }
 
-$items=get_item_master_list();
+$items=$db->getItemMasterList();
 
-if(!get_shopping_list_empty()){
+if(!$db->getShoppingListEmpty()){
 	$disableUndo=" disabled";
 	$disableShop="";
 }else{
@@ -73,7 +76,7 @@ if(!get_shopping_list_empty()){
 						<select name="todelete[]" multiple="multiple" style="height:120pt;width:15em;">
 							<?php
 							foreach($items as $item){
-								echo "<option value=\"$item[0]\">".htmlspecialchars($item[1])."</option>";
+								echo "<option value=\"{$item['ITEM_ID']}\">".htmlspecialchars($item['NAME'])."</option>";
 							}
 							?>
 						</select>
@@ -85,7 +88,7 @@ if(!get_shopping_list_empty()){
 						<select name="VOTE[]" multiple="multiple" style="height:120pt;width:15em;">
 							<?php
 							foreach($items as $item){
-								echo "<option value=\"$item[0]\">".htmlspecialchars($item[1])."</option>";
+								echo "<option value=\"{$item['ITEM_ID']}\">".htmlspecialchars($item['NAME'])."</option>";
 							}
 							?>
 						</select>
@@ -106,7 +109,8 @@ if(!get_shopping_list_empty()){
 		<div class="floater">
 			<div class="columns">
 				<?php 
-				$votes=get_vote_info();
+				$db=Database::getDB();
+				$votes=$db->getVoteInfo($_SERVER['REMOTE_ADDR']);
 				if(count($votes)==0){
 					echo "<p>The shopping list is empty</p>";
 				}else{

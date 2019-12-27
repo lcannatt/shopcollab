@@ -1,10 +1,13 @@
 <?php
-require_once './includes/boxGen.php';
+require_once './includes/pc_general.php';
 require_once './includes/lib.php';
+require_once './includes/database.php';
+//Update all votes/new items sent in POST REQUEST as needed.
 require_once './vote.php';
 
 // Query DB for existing shopping list
-$votes=get_vote_info();
+$db=Database::getDB();
+$votes=$db->getVoteInfo($_SERVER['REMOTE_ADDR']);
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -15,7 +18,8 @@ $votes=get_vote_info();
 	<script type="text/javascript" src="./scripts/masonry.js"></script>
 </head>
 <body onresize="evalCols()" onload="initCols()">
-	<?php require './includes/nav.php';	
+	<?php
+	pc_navBar();
 	if(isset($success)&&!$success){
 		echo "<div class=\"error\"><p>Bad input. No Soup for you.</p></div>";
 	}

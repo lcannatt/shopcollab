@@ -1,9 +1,10 @@
 <?php
-require_once './includes/boxGen.php';
+require_once './includes/pc_general.php';
 require_once './includes/lib.php';
-$db = open_db();
 require_once './includes/auth.php';
-$itemsByCat=get_previously_requested_items();
+require_once './includes/database.php';
+$db = Database::getDB();
+$itemsByCat=$db->getAllItemsCatSort();
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -13,7 +14,7 @@ $itemsByCat=get_previously_requested_items();
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-	<?php require './includes/nav.php';	?>
+	<?php pc_navBar();	?>
 	<div class="preview">
 		<h2>
 			Add an item to the shopping list
@@ -30,7 +31,7 @@ $itemsByCat=get_previously_requested_items();
 					echo '</datalist>';
 				} else {
 					echo '<select id="catSelect" name="category">';
-					foreach($itemsByCat as $cat=>$items){echo "<option value=\"$cat\">".ucfirst(strtolower($cat))."</option>";}
+					foreach($itemsByCat as $cat=>$items){echo "<option value=\"".ucfirst(strtolower($cat))."\">".ucfirst(strtolower($cat))."</option>";}
 					echo '</select>';
 				}
 				
@@ -41,7 +42,7 @@ $itemsByCat=get_previously_requested_items();
 			<input id="categoryList" list="replaceCat" name="itemInput">
 				<?php
 				foreach($itemsByCat as $cat=>$items){
-					echo "<datalist id=\"$cat\">";
+					echo "<datalist id=\"".ucfirst(strtolower($cat))."\">";
 					foreach($items as $item){
 						echo "<option value=\"".ucfirst(strtolower(htmlspecialchars($item)))."\">";
 					}

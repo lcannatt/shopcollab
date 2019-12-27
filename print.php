@@ -1,6 +1,7 @@
 <?php
 require_once './includes/lib.php';
 require_once './includes/auth.php';
+require_once './includes/database.php';
 
 if(!$authStatus||!is_post_request()){
     die;
@@ -10,17 +11,6 @@ if(!isset($_POST['VOTE'])){
     die;
 }
 
-function get_item_data($id){
-    global $db;
-    $query= $db->prepare("SELECT NAME, CATEGORY FROM item_master WHERE ITEM_ID=?");
-    $query->bind_param("i",$id);
-    $query->execute();
-    $query->store_result();
-    $query->bind_result($name,$cat);
-    $query->fetch();
-    $row=Array($name,$cat);
-    return $row;
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -38,13 +28,15 @@ function get_item_data($id){
 <body>
 <?php
 $last='';
-foreach($_POST['VOTE'] as $id){
-    $data=get_item_data($id);
-    if($data[1]!=$last){
-        echo "<h2>".ucfirst(strtolower($data[1]))."</h2>";
-        $last=$data[1];
+$db=Database::getDB();
+$data=$db->getPrintInfo($_POST['VOTE']);
+foreach($data as $row){
+    if($last!=$row['CATEGORY']){
+        echo "<h2>".ucfirst(strtolower($row['CATEGORY']))."</h2>";
+        $last=$row['CATEGORY'];
     }
-    echo "<li>".ucfirst(strtolower($data[0]))."</li>";
+    echo "<li>".ucfirst(strtolower($row['NAME']))."</li>";
+    echo "\n";
 }
 ?>
 </body>
